@@ -3,6 +3,7 @@ package skbn
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -18,8 +19,9 @@ import (
 
 // GetClientToS3 checks the connection to S3 and returns the tested client
 func GetClientToS3(path string) (*session.Session, error) {
-	pSplit := strings.Split(path, "/")
-	bucket, _ := initS3Variables(pSplit)
+	log.Println("Get Client!")
+	//pSplit := strings.Split(path, "/")
+	//bucket, _ := initS3Variables(pSplit)
 	attempts := 3
 	attempt := 0
 	for attempt < attempts {
@@ -31,13 +33,15 @@ func GetClientToS3(path string) (*session.Session, error) {
 				return nil, err
 			}
 			utils.Sleep(attempt)
+			log.Println("coucou!")
 			continue
 		}
+		//log.Println(s)
 
-		_, err = s3.New(s).ListObjects(&s3.ListObjectsInput{
+		/*_, err = s3.New(s).ListObjects(&s3.ListObjectsInput{
 			Bucket:  aws.String(bucket),
 			MaxKeys: aws.Int64(0),
-		})
+		})*/
 		if attempt == attempts {
 			if err != nil {
 				return nil, err
@@ -54,6 +58,7 @@ func GetClientToS3(path string) (*session.Session, error) {
 
 // GetListOfFilesFromS3 gets list of files in path from S3 (recursive)
 func GetListOfFilesFromS3(iClient interface{}, path string) ([]string, error) {
+	log.Println("Get List of Files!")
 	s := iClient.(*session.Session)
 	pSplit := strings.Split(path, "/")
 	if err := validateS3Path(pSplit); err != nil {
@@ -185,6 +190,7 @@ func getNewSession() (*session.Session, error) {
 		forcePathStyle, _ := strconv.ParseBool(fps)
 		awsConfig.S3ForcePathStyle = aws.Bool(forcePathStyle)
 	}
+	log.Println("get the session")
 
 	s, err := session.NewSession(awsConfig)
 
