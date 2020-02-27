@@ -33,10 +33,17 @@ func GetClientToS3(path string) (*session.Session, error) {
 				return nil, err
 			}
 			utils.Sleep(attempt)
-			log.Println("coucou!")
 			continue
 		}
 		//log.Println(s)
+		/*
+		Facing the issue 
+		SerializationError: failed to decode REST XML response
+		        status code: 200, request id: 9df1051f314caeb9aa8e
+			caused by: strconv.ParseInt: parsing "": invalid syntax
+		we decide to comment the follwing function until we find the source of the bug and resolve it	
+
+		*/
 
 		/*_, err = s3.New(s).ListObjects(&s3.ListObjectsInput{
 			Bucket:  aws.String(bucket),
